@@ -1,0 +1,311 @@
+/* Valentine's Day — HTML + CSS + JS, no build step */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: system-ui, sans-serif;
+  background: #f8d7da; /* pastel pink */
+  color: #333;
+}
+
+main {
+  text-align: center;
+}
+
+/* Bigger heart in the middle */
+.btn-heart {
+  font-size: 6rem;
+  padding: 0.5rem 1rem;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.btn-heart:hover {
+  transform: scale(1.1);
+}
+
+.btn-heart:active {
+  transform: scale(0.95);
+}
+
+/* Page 2: dark blue, expands as a circle from center */
+.screen-2 {
+  position: fixed;
+  inset: 0;
+  background: #0a0a1f; /* significantly darker blue */
+  z-index: 10;
+  clip-path: circle(0% at 50% 50%);
+  transition: clip-path 1.2s ease-out;
+  overflow: hidden;
+}
+
+.screen-2.open {
+  clip-path: circle(150vmax at 50% 50%);
+}
+
+.screen-2[aria-hidden="true"] {
+  pointer-events: none;
+}
+
+.screen-2[aria-hidden="false"] {
+  pointer-events: auto;
+}
+
+.back-btn {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  z-index: 30;
+  padding: 0.4rem 0.75rem;
+  font-size: 0.9rem;
+  font-family: inherit;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 0.25rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.back-btn:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.next-btn {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  z-index: 30;
+  padding: 0.4rem 0.75rem;
+  font-size: 0.9rem;
+  font-family: inherit;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 0.25rem;
+  cursor: pointer;
+  transition: background 0.2s, opacity 0.3s;
+}
+
+.next-btn:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.next-btn.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Stars container: brought down a bit, above flower scene */
+.stars-container {
+  position: absolute;
+  inset: 0 0 5% 0; /* full width, down to bottom 5% */
+  pointer-events: none;
+  z-index: 12;
+}
+
+.stars-container .star {
+  pointer-events: auto;
+}
+
+/* Twinkly star */
+.star {
+  position: absolute;
+  width: 7px;
+  height: 7px;
+  background: #fff;
+  border-radius: 50%;
+  box-shadow: 0 0 8px 3px rgba(255, 255, 255, 0.8);
+  cursor: pointer;
+  animation: twinkle 2s ease-in-out infinite;
+}
+
+.star:nth-child(4n) { animation-delay: 0.3s; }
+.star:nth-child(4n + 1) { animation-delay: 0.8s; }
+.star:nth-child(4n + 2) { animation-delay: 1.5s; }
+.star:nth-child(4n + 3) { animation-delay: 0.1s; }
+
+@keyframes twinkle {
+  0%, 100% { opacity: 0.4; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.2); }
+}
+
+/* Fact tooltip on hover */
+.star-fact {
+  position: fixed;
+  z-index: 20;
+  max-width: 220px;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.8rem;
+  line-height: 1.35;
+  color: #0a0a1f;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  pointer-events: none;
+  opacity: 0;
+  transform: translate(-50%, -100%) translateY(-8px);
+  transition: opacity 0.2s, transform 0.2s;
+}
+
+.star-fact.visible {
+  opacity: 1;
+  transform: translate(-50%, -100%) translateY(-4px);
+}
+
+/* Glowing text in the middle */
+.glow-text {
+  position: absolute;
+  bottom: 12%;
+  left: 50%;
+  transform: translate(-50%, 0);
+  font-size: clamp(1.5rem, 4vw, 3rem);
+  font-weight: 300;
+  color: #fff;
+  text-align: center;
+  z-index: 15;
+  font-family: 'Georgia', 'Times New Roman', serif;
+  letter-spacing: 0.05em;
+  text-shadow: 
+    0 0 10px rgba(255, 255, 255, 0.8),
+    0 0 20px rgba(255, 255, 255, 0.6),
+    0 0 30px rgba(107, 240, 255, 0.5),
+    0 0 40px rgba(107, 240, 255, 0.4),
+    0 0 50px rgba(107, 240, 255, 0.3);
+  animation: text-glow 3s ease-in-out infinite alternate;
+  pointer-events: none;
+}
+
+@keyframes text-glow {
+  0% {
+    text-shadow: 
+      0 0 10px rgba(255, 255, 255, 0.8),
+      0 0 20px rgba(255, 255, 255, 0.6),
+      0 0 30px rgba(107, 240, 255, 0.5),
+      0 0 40px rgba(107, 240, 255, 0.4),
+      0 0 50px rgba(107, 240, 255, 0.3);
+  }
+  100% {
+    text-shadow: 
+      0 0 15px rgba(255, 255, 255, 0.9),
+      0 0 25px rgba(255, 255, 255, 0.7),
+      0 0 35px rgba(107, 240, 255, 0.6),
+      0 0 45px rgba(107, 240, 255, 0.5),
+      0 0 60px rgba(107, 240, 255, 0.4);
+  }
+}
+
+/* Shooting star: ~8° downward, origin/end set via CSS vars for randomness */
+.shooting-star {
+  position: fixed;
+  top: var(--shoot-y, 20vh);
+  left: var(--shoot-x, 100vw);
+  width: 120px;
+  height: 2px;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.3) 40%, rgba(255, 255, 255, 0) 100%);
+  border-radius: 2px;
+  pointer-events: none;
+  z-index: 14;
+  opacity: 0;
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
+  transform: rotate(var(--shoot-angle, -8deg));
+  transform-origin: left center;
+}
+
+.shooting-star.run {
+  animation: shoot 1.4s linear forwards;
+}
+
+@keyframes shoot {
+  0% {
+    opacity: 0;
+    transform: rotate(var(--shoot-angle, -8deg)) translate(0, 0);
+  }
+  8% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 0.7;
+  }
+  100% {
+    opacity: 0;
+    transform: rotate(var(--shoot-angle, -8deg)) translate(var(--shoot-dx), var(--shoot-dy));
+  }
+}
+
+/* ---------- Page 3: Loki1 -> Loki2 out-to-in transition ---------- */
+.screen-3 {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  background: #000;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.5s ease, visibility 0.5s ease;
+  pointer-events: none;
+}
+
+.screen-3.visible {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.screen-3 .back-btn--page3 {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  z-index: 22;
+}
+
+.screen-3 .next-btn--page3 {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  z-index: 22;
+}
+
+.loki-stage {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.loki-base,
+.loki-top {
+  position: absolute;
+  inset: 0;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+/* Loki 2 is the base layer (final state) */
+.loki-base {
+  background-image: url('loki2.png');
+}
+
+/* Loki 1 is the top layer that shrinks to center (out -> in) */
+.loki-top {
+  background-image: url('loki1.png');
+  clip-path: circle(150vmax at 50% 45%);
+  transition: clip-path 4s ease-in-out;
+  will-change: clip-path;
+}
+
+/* Triggered after 1.4s on page 3 */
+.screen-3.swap .loki-top {
+  clip-path: circle(0vmax at 50% 45%);
+}
+
