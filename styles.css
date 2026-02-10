@@ -17,6 +17,59 @@ body {
   color: #333;
 }
 
+/* Intro: orange screen with clickable "भा" circle → goes to heart */
+.screen-bha {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: #e67e22;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.4s ease, visibility 0.4s ease;
+}
+
+.screen-bha.hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.bha-circle {
+  width: min(280px, 70vw);
+  height: min(280px, 70vw);
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25), inset 0 2px 0 rgba(255, 255, 255, 0.8);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.bha-circle:hover {
+  transform: scale(1.05);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.3), inset 0 2px 0 rgba(255, 255, 255, 0.9);
+}
+
+.bha-circle:active {
+  transform: scale(0.98);
+}
+
+.bha-text {
+  font-size: min(8rem, 22vw);
+  font-weight: 700;
+  color: #c0392b;
+  line-height: 1;
+  user-select: none;
+}
+
+.heart-screen-hidden {
+  visibility: hidden;
+}
+
 main {
   text-align: center;
 }
@@ -37,6 +90,106 @@ main {
 
 .btn-heart:active {
   transform: scale(0.95);
+}
+
+/* Red explosion overlay (after page1 heart click) */
+.explosion-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: radial-gradient(circle at center, #c41e3a 0%, #8b0000 50%, #4a0000 100%);
+  clip-path: circle(0% at 50% 50%);
+  transition: clip-path 0.85s ease-out;
+  pointer-events: none;
+}
+
+.explosion-overlay.run {
+  clip-path: circle(150vmax at 50% 50%);
+}
+
+/* Greeting screen: "hello my love" + heart */
+.screen-greeting {
+  position: fixed;
+  inset: 0;
+  z-index: 15;
+  background: #1a0505;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.5s ease, visibility 0.5s ease;
+  pointer-events: none;
+}
+
+.screen-greeting.visible {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.screen-greeting .back-btn--greeting {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  z-index: 30;
+}
+
+.greeting-text {
+  font-size: clamp(1.8rem, 5vw, 3.5rem);
+  font-weight: 300;
+  color: #fff;
+  font-family: Georgia, 'Times New Roman', serif;
+  letter-spacing: 0.08em;
+  text-align: center;
+  margin: 0;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.6s ease 0.2s, transform 0.6s ease 0.2s;
+}
+
+.greeting-text.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.btn-heart--greeting {
+  font-size: 7rem;
+  opacity: 0;
+  transform: scale(0.8);
+  transition: opacity 0.5s ease 0.4s, transform 0.3s ease;
+}
+
+.btn-heart--greeting.visible {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.btn-heart--greeting:hover {
+  transform: scale(1.15);
+}
+
+.btn-heart--greeting:active {
+  transform: scale(0.95);
+}
+
+.greeting-subtext {
+  font-size: clamp(1rem, 2.5vw, 1.5rem);
+  font-weight: 300;
+  color: rgba(255, 255, 255, 0.9);
+  font-family: Georgia, 'Times New Roman', serif;
+  letter-spacing: 0.05em;
+  margin: 0;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.5s ease 0.5s, transform 0.5s ease 0.5s;
+}
+
+.greeting-subtext.visible {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 /* Page 2: dark blue, expands as a circle from center */
@@ -276,6 +429,40 @@ main {
   z-index: 22;
 }
 
+.loki-text {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 21;
+  color: #fff;
+  font-family: Georgia, 'Times New Roman', serif;
+  text-align: center;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8), 0 0 20px rgba(0, 0, 0, 0.5);
+  pointer-events: none;
+}
+
+.loki-text--top {
+  top: 4.5rem;
+  max-width: 90%;
+  font-size: clamp(1.25rem, 4vw, 2rem);
+  font-weight: 400;
+  line-height: 1.4;
+}
+
+.loki-text--bottom {
+  bottom: 2.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-size: clamp(1.1rem, 3.5vw, 1.75rem);
+  font-weight: 300;
+}
+
+.loki-text--bottom span:last-child {
+  font-weight: 600;
+  letter-spacing: 0.08em;
+}
+
 .loki-stage {
   position: absolute;
   inset: 0;
@@ -307,5 +494,266 @@ main {
 /* Triggered after 1.4s on page 3 */
 .screen-3.swap .loki-top {
   clip-path: circle(0vmax at 50% 45%);
+}
+
+/* ---------- Snow screen (Pixel Snow) ---------- */
+.screen-snow {
+  position: fixed;
+  inset: 0;
+  z-index: 25;
+  background: #000;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.4s ease, visibility 0.4s ease;
+}
+
+.screen-snow.open {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.screen-snow[aria-hidden="true"] {
+  pointer-events: none;
+}
+
+.screen-snow .back-btn--snow {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  z-index: 5;
+}
+
+.screen-snow .next-btn--snow {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  z-index: 5;
+}
+
+.screen-snow .pixel-snow-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.snow-screen-text {
+  position: absolute;
+  left: 50%;
+  top: 38%;
+  transform: translate(-50%, -50%);
+  margin: 0;
+  padding: 0 1.5rem;
+  font-size: clamp(1.5rem, 5vw, 2.5rem);
+  font-weight: 600;
+  font-family: Georgia, 'Times New Roman', serif;
+  color: rgba(255, 255, 255, 0.95);
+  text-align: center;
+  z-index: 5;
+  pointer-events: none;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+}
+
+.screen-snow .next-btn--snow-center {
+  position: absolute;
+  left: 50%;
+  top: 55%;
+  transform: translate(-50%, -50%);
+  z-index: 5;
+  min-width: 10rem;
+  padding: 0.85rem 2rem;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #fff;
+  background: linear-gradient(135deg, #e85a71 0%, #c8465f 100%);
+  border: none;
+  border-radius: 999px;
+  box-shadow: 0 6px 32px rgba(232, 90, 113, 0.4), 0 2px 8px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  letter-spacing: 0.02em;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.screen-snow .next-btn--snow-center:hover {
+  transform: translate(-50%, -50%) scale(1.05);
+  box-shadow: 0 8px 40px rgba(232, 90, 113, 0.5), 0 4px 12px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  background: linear-gradient(135deg, #f06b82 0%, #e85a71 100%);
+}
+
+.screen-snow .next-btn--snow-center:active {
+  transform: translate(-50%, -50%) scale(0.98);
+  box-shadow: 0 2px 16px rgba(232, 90, 113, 0.35), inset 0 2px 4px rgba(0, 0, 0, 0.15);
+}
+
+/* ---------- Valentine question screen ---------- */
+.screen-valentine {
+  position: fixed;
+  inset: 0;
+  z-index: 26;
+  background: #000;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.4s ease, visibility 0.4s ease;
+}
+
+.screen-valentine.open {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.screen-valentine[aria-hidden="true"] {
+  pointer-events: none;
+}
+
+.screen-valentine .back-btn--valentine {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  z-index: 10;
+}
+
+.valentine-question {
+  position: absolute;
+  left: 50%;
+  top: 40%;
+  transform: translate(-50%, -50%);
+  margin: 0;
+  padding: 0 1.5rem;
+  font-size: clamp(1.75rem, 5vw, 2.75rem);
+  font-weight: 600;
+  font-family: Georgia, 'Times New Roman', serif;
+  color: #fff;
+  text-align: center;
+  z-index: 5;
+}
+
+.valentine-buttons {
+  position: absolute;
+  left: 50%;
+  top: 58%;
+  transform: translateX(-50%);
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 320px;
+  min-height: 90px;
+}
+
+.valentine-btn {
+  min-width: 6rem;
+  padding: 0.65rem 1.75rem;
+  font-size: 1.25rem;
+  font-weight: 600;
+  font-family: inherit;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, left 0.15s ease-out, top 0.15s ease-out, background 0.15s ease;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.valentine-btn--yes {
+  background: #e85a71;
+  color: #fff;
+}
+
+.valentine-btn--yes:hover {
+  background: #f06b82;
+  transform: scale(1.05);
+}
+
+/* No stays inside .valentine-buttons; positioned with left/top only (no right) */
+.valentine-btn--no {
+  background: #444;
+  color: #fff;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: fit-content;
+  white-space: nowrap;
+  touch-action: none;
+}
+
+.valentine-btn--no:hover {
+  background: #555;
+}
+
+/* ---------- Fireworks (after Yes) ---------- */
+.screen-fireworks {
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  background: #000;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.4s ease, visibility 0.4s ease;
+}
+
+.screen-fireworks.open {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.screen-fireworks[aria-hidden="true"] {
+  pointer-events: none;
+}
+
+.fireworks-yes-scroll-wrap {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  overflow: hidden;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+}
+
+.fireworks-yes-scroll {
+  font-size: clamp(4rem, 18vw, 12rem);
+  font-weight: 900;
+  color: rgba(255, 255, 255, 0.85);
+  white-space: nowrap;
+  animation: fireworks-yes-scroll 25s linear 0.5s 1 normal forwards;
+  text-shadow: 0 0 40px rgba(255, 255, 255, 0.3);
+}
+
+@keyframes fireworks-yes-scroll {
+  0% { transform: translateX(100vw); }
+  100% { transform: translateX(-100%); }
+}
+
+#fireworksCanvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  cursor: crosshair;
+}
+
+.fireworks-continue-btn {
+  position: absolute;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  padding: 0.6rem 1.5rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #fff;
+  background: rgba(232, 90, 113, 0.9);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.fireworks-continue-btn:hover {
+  background: rgba(240, 107, 130, 1);
 }
 

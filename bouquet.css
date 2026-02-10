@@ -1,0 +1,470 @@
+/* Bouquet Builder - scoped to .screen-bouquet */
+:root {
+  --bouquet-bg0: #05070b;
+  --bouquet-bg1: #070b12;
+  --bouquet-card: rgba(255, 255, 255, 0.06);
+  --bouquet-card2: rgba(255, 255, 255, 0.1);
+  --bouquet-text: rgba(255, 255, 255, 0.92);
+  --bouquet-muted: rgba(255, 255, 255, 0.62);
+  --bouquet-glow: rgba(255, 255, 255, 0.18);
+  --bouquet-accent: rgba(255, 255, 255, 0.88);
+}
+
+.screen-bouquet {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+  background: radial-gradient(1000px 600px at 50% 20%, rgba(255, 255, 255, 0.08), transparent 60%),
+    linear-gradient(180deg, var(--bouquet-bg0), var(--bouquet-bg1));
+  color: var(--bouquet-text);
+  overflow: hidden;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.4s ease, visibility 0.4s ease;
+}
+
+.screen-bouquet.open {
+  opacity: 1;
+  visibility: visible;
+}
+
+.screen-bouquet[aria-hidden="true"] {
+  pointer-events: none;
+}
+
+.screen-bouquet[aria-hidden="false"] {
+  pointer-events: auto;
+}
+
+.screen-bouquet .back-btn--bouquet {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  z-index: 30;
+}
+
+.bouquet-wrap {
+  height: 100%;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  gap: 16px;
+  padding: 20px;
+  padding-top: 3.5rem;
+  box-sizing: border-box;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.bouquet-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.bouquet-title {
+  margin: 0;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+  font-size: clamp(22px, 3vw, 30px);
+}
+
+.bouquet-sub {
+  margin: 6px 0 0 0;
+  color: var(--bouquet-muted);
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.bouquet-hint {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  color: var(--bouquet-muted);
+  font-size: 13px;
+}
+
+.bouquet-hint .pill {
+  padding: 8px 10px;
+  border-radius: 999px;
+  background: var(--bouquet-card);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(10px);
+}
+
+.bouquet-main {
+  display: grid;
+  grid-template-columns: 1.3fr 0.7fr;
+  gap: 16px;
+  min-height: 0;
+}
+
+.bouquet-canvas {
+  position: relative;
+  border-radius: 22px;
+  background: radial-gradient(800px 420px at 50% 25%, rgba(255, 255, 255, 0.08), transparent 60%),
+    rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  overflow: visible;
+  min-height: 420px;
+}
+
+.bouquet-canvas::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(500px 220px at 50% 85%, rgba(255, 255, 255, 0.1), transparent 60%);
+  pointer-events: none;
+  opacity: 0.8;
+}
+
+/* Bouquet cone: wide at top, point at bottom. Moved up (bottom: 80px). */
+.coneWrap {
+  position: absolute;
+  left: 50%;
+  bottom: 80px;
+  transform: translateX(-50%);
+  width: 200px;
+  height: 200px;
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+  --cone-color-rgb: 200, 212, 224;
+  background: linear-gradient(180deg,
+    rgba(var(--cone-color-rgb), 0.85),
+    rgba(var(--cone-color-rgb), 0.5) 40%,
+    rgba(var(--cone-color-rgb), 0.25) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  filter: drop-shadow(0 0 14px rgba(255, 255, 255, 0.08));
+  pointer-events: none;
+}
+
+.coneWrap::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: -12px;
+  transform: translateX(-50%);
+  width: 140px;
+  height: 24px;
+  border-radius: 999px;
+  background: rgba(var(--cone-color-rgb), 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.bouquet-panel-options {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.cone-color-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 14px;
+}
+
+.cone-color-label {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.cone-color-input {
+  width: 36px;
+  height: 28px;
+  padding: 2px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+}
+
+/* Rotation arrows above selected flower */
+.rotate-arrows {
+  position: absolute;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  z-index: 1000;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+
+.rotate-arrows.visible {
+  pointer-events: auto;
+  opacity: 1;
+}
+
+.rotate-arrow {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  background: rgba(0, 0, 0, 0.5);
+  color: rgba(255, 255, 255, 0.95);
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s, transform 0.1s;
+}
+
+.rotate-arrow:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.rotate-arrow:active {
+  transform: scale(0.92);
+}
+
+.dropLabel {
+  position: absolute;
+  left: 50%;
+  top: 18px;
+  transform: translateX(-50%);
+  color: rgba(255, 255, 255, 0.55);
+  font-size: 14px;
+  padding: 10px 12px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px dashed rgba(255, 255, 255, 0.14);
+  pointer-events: none;
+}
+
+.piece {
+  position: absolute;
+  transform-origin: 50% 65%;
+  cursor: grab;
+  user-select: none;
+  touch-action: none;
+  filter: drop-shadow(0 8px 20px rgba(0, 0, 0, 0.5));
+  transition: transform 120ms ease, filter 120ms ease;
+}
+
+.piece:active {
+  cursor: grabbing;
+}
+
+.piece:hover {
+  filter: drop-shadow(0 12px 24px rgba(0, 0, 0, 0.55)) drop-shadow(0 0 18px rgba(255, 255, 255, 0.12));
+}
+
+.piece-flower {
+  display: block;
+  width: 110px;
+  height: auto;
+  max-height: 120px;
+  object-fit: contain;
+  pointer-events: none;
+}
+
+.piece .stem {
+  display: block;
+  margin: -4px auto 0 auto;
+  width: 8px;
+  height: 48px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, rgba(120, 255, 170, 0.5), rgba(30, 160, 90, 0.4));
+  box-shadow: 0 0 10px rgba(90, 255, 160, 0.15);
+}
+
+.flowerIconImg {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+  display: block;
+  filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.15));
+}
+
+.bouquet-panel {
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  gap: 12px;
+  min-height: 0;
+}
+
+.screen-bouquet .card {
+  border-radius: 18px;
+  background: var(--bouquet-card);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 14px;
+  backdrop-filter: blur(10px);
+}
+
+.screen-bouquet .card h2 {
+  margin: 0 0 6px 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.86);
+  letter-spacing: 0.2px;
+}
+
+.screen-bouquet .card p {
+  margin: 0;
+  font-size: 13px;
+  color: var(--bouquet-muted);
+  line-height: 1.4;
+}
+
+.tray {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  align-content: start;
+  overflow: auto;
+  padding-right: 6px;
+}
+
+.tray::-webkit-scrollbar {
+  width: 8px;
+}
+
+.tray::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 999px;
+}
+
+.flowerBtn {
+  border-radius: 16px;
+  background: rgba(0, 0, 0, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 12px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: center;
+  justify-content: center;
+  cursor: grab;
+  user-select: none;
+  transition: transform 120ms ease, background 120ms ease, border-color 120ms ease;
+}
+
+.flowerBtn:hover {
+  transform: translateY(-2px);
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.18);
+}
+
+.flowerName {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.bouquet-controls {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.screen-bouquet button {
+  appearance: none;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.9);
+  border-radius: 14px;
+  padding: 10px 12px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: transform 120ms ease, background 120ms ease;
+}
+
+.screen-bouquet button:hover {
+  transform: translateY(-1px);
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.screen-bouquet button:active {
+  transform: translateY(0);
+}
+
+.screen-bouquet .primary {
+  background: rgba(255, 255, 255, 0.16);
+  border-color: rgba(255, 255, 255, 0.22);
+}
+
+.trash {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px;
+  border-radius: 16px;
+  border: 1px dashed rgba(255, 255, 255, 0.18);
+  background: rgba(0, 0, 0, 0.16);
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 13px;
+  user-select: none;
+}
+
+.trash.hot {
+  background: rgba(255, 80, 80, 0.12);
+  border-color: rgba(255, 120, 120, 0.35);
+  color: rgba(255, 210, 210, 0.92);
+}
+
+@media (max-width: 860px) {
+  .bouquet-main {
+    grid-template-columns: 1fr;
+  }
+  .bouquet-panel {
+    grid-template-rows: auto auto auto;
+  }
+  .tray {
+    grid-template-columns: repeat(3, 1fr);
+    max-height: 220px;
+  }
+}
+
+/* After-bouquet screen */
+.screen-after-bouquet {
+  position: fixed;
+  inset: 0;
+  z-index: 21;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  background: radial-gradient(1000px 600px at 50% 20%, rgba(255, 255, 255, 0.08), transparent 60%),
+    linear-gradient(180deg, #05070b, #070b12);
+  color: rgba(255, 255, 255, 0.92);
+  font-family: Georgia, 'Times New Roman', serif;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.5s ease, visibility 0.5s ease;
+}
+
+.screen-after-bouquet.open {
+  opacity: 1;
+  visibility: visible;
+}
+
+.screen-after-bouquet[aria-hidden="true"] {
+  pointer-events: none;
+}
+
+.screen-after-bouquet[aria-hidden="false"] {
+  pointer-events: auto;
+}
+
+.after-bouquet-text {
+  font-size: clamp(1.5rem, 4vw, 2.5rem);
+  font-weight: 300;
+  text-align: center;
+  margin: 0;
+  padding: 0 2rem;
+}
+
+.screen-after-bouquet .next-btn--after-bouquet {
+  position: static;
+}

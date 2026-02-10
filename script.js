@@ -1,41 +1,127 @@
-// Heart click: expand circle into midnight blue screen
+// Flow: pageBha (भा circle) → page1 (heart) → red explosion → greeting → Loki → Flowers
+const pageBha = document.getElementById('pageBha');
+const bhaCircle = document.getElementById('bhaCircle');
 const heart = document.querySelector('.btn-heart');
+const page1 = document.getElementById('page1');
+
+if (pageBha && bhaCircle && page1) {
+  bhaCircle.addEventListener('click', function () {
+    pageBha.classList.add('hidden');
+    page1.classList.remove('heart-screen-hidden');
+  });
+}
 const page2 = document.getElementById('page2');
-
-const flowerScene = document.querySelector('.flower-scene');
-const nextBtn = document.getElementById('nextBtn');
-
-heart.addEventListener('click', function () {
-  page2.classList.add('open');
-  page2.setAttribute('aria-hidden', 'false');
-  if (flowerScene && flowerScene.classList.contains('not-loaded')) {
-    setTimeout(function () { flowerScene.classList.remove('not-loaded'); }, 1000);
-  }
-});
-
-// Back button: collapse back to page 1
-document.querySelector('.back-btn').addEventListener('click', function () {
-  page2.classList.remove('open');
-  page2.setAttribute('aria-hidden', 'true');
-});
-
-// Next button: show page 3 (Loki screen)
 const page3 = document.getElementById('page3');
-let page3SwapTimeoutId = null;
-if (nextBtn && page3) {
-  nextBtn.addEventListener('click', function () {
+const explosion = document.getElementById('explosion');
+const pageGreeting = document.getElementById('pageGreeting');
+const flowerScene = document.querySelector('.flower-scene');
+
+// Background music playlist (continuous): music1 → music2 → music3 → repeat
+// Browsers block autoplay until a user gesture – we only set "started" when play() actually succeeds.
+(function () {
+  var tracks = [
+    new Audio('music1.mp3'),
+    new Audio('music2.mp3'),
+    new Audio('music3.mp3')
+  ];
+  tracks.forEach(function (a) {
+    a.preload = 'auto';
+    a.volume = 1;
+  });
+
+  var started = false;
+  var idx = 0;
+
+  function stopAll() {
+    tracks.forEach(function (a) {
+      try { a.pause(); } catch (e) {}
+      try { a.currentTime = 0; } catch (e) {}
+    });
+  }
+
+  function playIndex(i) {
+    if (i < 0 || i >= tracks.length) return null;
+    tracks.forEach(function (a, j) {
+      if (j !== i) {
+        try { a.pause(); } catch (e) {}
+      }
+    });
+    idx = i;
+    try {
+      return tracks[i].play();
+    } catch (e) {
+      return null;
+    }
+  }
+
+  tracks[0].addEventListener('ended', function () { playIndex(1); });
+  tracks[1].addEventListener('ended', function () { playIndex(2); });
+  tracks[2].addEventListener('ended', function () { playIndex(0); });
+
+  function start() {
+    if (started) return;
+    stopAll();
+    var p = playIndex(0);
+    if (p && typeof p.then === 'function') {
+      p.then(function () {
+        started = true;
+      }).catch(function () {});
+    } else {
+      started = true;
+    }
+  }
+
+  window.valentinesMusic = { start: start };
+
+  document.addEventListener('pointerdown', function () { start(); }, { once: true });
+  document.addEventListener('click', function () { start(); }, { once: true });
+})();
+
+// Page 1 heart: red explosion, then show greeting
+heart.addEventListener('click', function () {
+  window.valentinesMusic && window.valentinesMusic.start();
+  explosion.classList.add('run');
+  explosion.setAttribute('aria-hidden', 'false');
+  setTimeout(function () {
+    page1.style.visibility = 'hidden';
+    page1.style.pointerEvents = 'none';
+    explosion.classList.remove('run');
+    explosion.setAttribute('aria-hidden', 'true');
+    pageGreeting.classList.add('visible');
+    pageGreeting.setAttribute('aria-hidden', 'false');
+    document.querySelector('.greeting-text').classList.add('visible');
+    document.querySelector('.btn-heart--greeting').classList.add('visible');
+    document.querySelector('.greeting-subtext').classList.add('visible');
+  }, 900);
+});
+
+// Greeting heart: go to Loki (page 3)
+const greetingHeart = document.querySelector('.btn-heart--greeting');
+if (greetingHeart && page3) {
+  greetingHeart.addEventListener('click', function () {
+    pageGreeting.classList.remove('visible');
+    pageGreeting.setAttribute('aria-hidden', 'true');
     page3.classList.add('visible');
     page3.setAttribute('aria-hidden', 'false');
-    page3.classList.remove('swap');
-    if (page3SwapTimeoutId) clearTimeout(page3SwapTimeoutId);
-    page3SwapTimeoutId = setTimeout(function () {
-      page3.classList.add('swap');
-      page3SwapTimeoutId = null;
-    }, 1400);
+    page3.classList.add('swap');
   });
 }
 
-// Back on page 3: return to page 2
+// Greeting Back: return to page 1
+const backBtnGreeting = document.querySelector('.back-btn--greeting');
+if (backBtnGreeting) {
+  backBtnGreeting.addEventListener('click', function () {
+    pageGreeting.classList.remove('visible');
+    pageGreeting.setAttribute('aria-hidden', 'true');
+    page1.style.visibility = '';
+    page1.style.pointerEvents = '';
+    document.querySelector('.greeting-text').classList.remove('visible');
+    document.querySelector('.btn-heart--greeting').classList.remove('visible');
+    document.querySelector('.greeting-subtext').classList.remove('visible');
+  });
+}
+
+// Loki Back: return to greeting
 const backBtnPage3 = document.querySelector('.back-btn--page3');
 const nextBtn3 = document.getElementById('nextBtn3');
 if (backBtnPage3 && page3) {
@@ -43,18 +129,265 @@ if (backBtnPage3 && page3) {
     page3.classList.remove('visible');
     page3.setAttribute('aria-hidden', 'true');
     page3.classList.remove('swap');
-    if (page3SwapTimeoutId) {
-      clearTimeout(page3SwapTimeoutId);
-      page3SwapTimeoutId = null;
+    pageGreeting.classList.add('visible');
+    pageGreeting.setAttribute('aria-hidden', 'false');
+  });
+}
+
+// Loki Next: go to Light Pillar page (page5)
+const page5 = document.getElementById('page5');
+if (nextBtn3 && page5) {
+  nextBtn3.addEventListener('click', function () {
+    page3.classList.remove('visible');
+    page3.setAttribute('aria-hidden', 'true');
+    page5.classList.add('open');
+    page5.setAttribute('aria-hidden', 'false');
+  });
+}
+
+// Light Pillar (page5) Back: return to Loki
+const backBtnPage5 = document.querySelector('.back-btn--page5');
+if (backBtnPage5 && page5) {
+  backBtnPage5.addEventListener('click', function () {
+    page5.classList.remove('open');
+    page5.setAttribute('aria-hidden', 'true');
+    page3.classList.add('visible');
+    page3.setAttribute('aria-hidden', 'false');
+  });
+}
+
+// Light Pillar (page5) Next: go to Flowers
+const nextBtn5 = document.getElementById('nextBtn5');
+if (nextBtn5 && page2) {
+  nextBtn5.addEventListener('click', function () {
+    page5.classList.remove('open');
+    page5.setAttribute('aria-hidden', 'true');
+    page2.classList.add('open');
+    page2.setAttribute('aria-hidden', 'false');
+    if (flowerScene && flowerScene.classList.contains('not-loaded')) {
+      setTimeout(function () { flowerScene.classList.remove('not-loaded'); }, 1000);
     }
   });
 }
 
-// Page 3 next button (hook for future screens)
-if (nextBtn3) {
-  nextBtn3.addEventListener('click', function () {
-    // TODO: add page4 when you're ready
+// Flowers Back: return to Loki
+const backBtnPage2 = document.querySelector('.back-btn--page2');
+if (backBtnPage2 && page2) {
+  backBtnPage2.addEventListener('click', function () {
+    page2.classList.remove('open');
+    page2.setAttribute('aria-hidden', 'true');
+    page3.classList.add('visible');
+    page3.setAttribute('aria-hidden', 'false');
   });
+}
+
+// Flowers Next: go to Bouquet Builder
+const pageBouquet = document.getElementById('pageBouquet');
+const nextBtnPage2 = document.getElementById('nextBtnPage2');
+if (nextBtnPage2 && page2 && pageBouquet) {
+  nextBtnPage2.addEventListener('click', function () {
+    page2.classList.remove('open');
+    page2.setAttribute('aria-hidden', 'true');
+    pageBouquet.classList.add('open');
+    pageBouquet.setAttribute('aria-hidden', 'false');
+  });
+}
+
+// Bouquet Back: return to Flowers
+const backBtnBouquet = document.querySelector('.back-btn--bouquet');
+if (backBtnBouquet && pageBouquet && page2) {
+  backBtnBouquet.addEventListener('click', function () {
+    pageBouquet.classList.remove('open');
+    pageBouquet.setAttribute('aria-hidden', 'true');
+    page2.classList.add('open');
+    page2.setAttribute('aria-hidden', 'false');
+  });
+}
+
+// After-bouquet ("Of course it's beautiful"): Back to Bouquet, Next → snow (Infinite Menu)
+const pageAfterBouquet = document.getElementById('pageAfterBouquet');
+const backBtnAfterBouquet = document.querySelector('.back-btn--after-bouquet');
+const nextBtnAfterBouquet = document.getElementById('nextBtnAfterBouquet');
+const pageInfiniteMenu = document.getElementById('pageInfiniteMenu');
+if (pageAfterBouquet && pageBouquet) {
+  if (backBtnAfterBouquet) {
+    backBtnAfterBouquet.addEventListener('click', function () {
+      pageAfterBouquet.classList.remove('open');
+      pageAfterBouquet.setAttribute('aria-hidden', 'true');
+      pageBouquet.classList.add('open');
+      pageBouquet.setAttribute('aria-hidden', 'false');
+    });
+  }
+  // Next on this screen goes to the snow (Infinite Menu), not to the bouquet or any other screen
+  if (nextBtnAfterBouquet && pageInfiniteMenu) {
+    nextBtnAfterBouquet.addEventListener('click', function () {
+      pageAfterBouquet.classList.remove('open');
+      pageAfterBouquet.setAttribute('aria-hidden', 'true');
+      pageInfiniteMenu.classList.add('open');
+      pageInfiniteMenu.setAttribute('aria-hidden', 'false');
+    });
+  }
+}
+
+// Infinite Menu: Back to After Bouquet
+var backBtnInfiniteMenu = document.getElementById('backBtnInfiniteMenu');
+var nextBtnInfiniteMenu = document.getElementById('nextBtnInfiniteMenu');
+if (backBtnInfiniteMenu && pageInfiniteMenu && pageAfterBouquet) {
+  backBtnInfiniteMenu.addEventListener('click', function () {
+    pageInfiniteMenu.classList.remove('open');
+    pageInfiniteMenu.setAttribute('aria-hidden', 'true');
+    pageAfterBouquet.classList.add('open');
+    pageAfterBouquet.setAttribute('aria-hidden', 'false');
+  });
+}
+// Snow screen (dedicated)
+const pageSnow = document.getElementById('pageSnow');
+var backBtnSnow = document.getElementById('backBtnSnow');
+var nextBtnSnow = document.getElementById('nextBtnSnow');
+
+// Infinite Menu: Next → Snow screen
+if (nextBtnInfiniteMenu && pageInfiniteMenu && pageSnow) {
+  nextBtnInfiniteMenu.addEventListener('click', function () {
+    pageInfiniteMenu.classList.remove('open');
+    pageInfiniteMenu.setAttribute('aria-hidden', 'true');
+    pageSnow.classList.add('open');
+    pageSnow.setAttribute('aria-hidden', 'false');
+  });
+}
+
+var pageValentine = document.getElementById('pageValentine');
+
+// Snow: Back → Infinite Menu
+if (backBtnSnow && pageSnow && pageInfiniteMenu) {
+  backBtnSnow.addEventListener('click', function () {
+    pageSnow.classList.remove('open');
+    pageSnow.setAttribute('aria-hidden', 'true');
+    pageInfiniteMenu.classList.add('open');
+    pageInfiniteMenu.setAttribute('aria-hidden', 'false');
+  });
+}
+
+// Snow: Next → Valentine question screen
+if (nextBtnSnow && pageSnow && pageValentine) {
+  nextBtnSnow.addEventListener('click', function () {
+    pageSnow.classList.remove('open');
+    pageSnow.setAttribute('aria-hidden', 'true');
+    pageValentine.classList.add('open');
+    pageValentine.setAttribute('aria-hidden', 'false');
+  });
+}
+
+var nextBtnSnowCenter = document.getElementById('nextBtnSnowCenter');
+if (nextBtnSnowCenter && pageSnow && pageValentine) {
+  nextBtnSnowCenter.addEventListener('click', function () {
+    pageSnow.classList.remove('open');
+    pageSnow.setAttribute('aria-hidden', 'true');
+    pageValentine.classList.add('open');
+    pageValentine.setAttribute('aria-hidden', 'false');
+  });
+}
+
+// Valentine: Back → Snow
+var backBtnValentine = document.getElementById('backBtnValentine');
+if (backBtnValentine && pageValentine && pageSnow) {
+  backBtnValentine.addEventListener('click', function () {
+    pageValentine.classList.remove('open');
+    pageValentine.setAttribute('aria-hidden', 'true');
+    pageSnow.classList.add('open');
+    pageSnow.setAttribute('aria-hidden', 'false');
+  });
+}
+
+// Valentine: Yes → Fireworks (then Continue → After Bouquet)
+var pageFireworks = document.getElementById('pageFireworks');
+var valentineYes = document.getElementById('valentineYes');
+if (valentineYes && pageValentine && pageFireworks) {
+  valentineYes.addEventListener('click', function () {
+    pageValentine.classList.remove('open');
+    pageValentine.setAttribute('aria-hidden', 'true');
+    pageFireworks.classList.add('open');
+    pageFireworks.setAttribute('aria-hidden', 'false');
+  });
+}
+
+var fireworksContinueBtn = document.getElementById('fireworksContinueBtn');
+if (fireworksContinueBtn && pageFireworks && pageAfterBouquet) {
+  fireworksContinueBtn.addEventListener('click', function () {
+    pageFireworks.classList.remove('open');
+    pageFireworks.setAttribute('aria-hidden', 'true');
+    pageAfterBouquet.classList.add('open');
+    pageAfterBouquet.setAttribute('aria-hidden', 'false');
+  });
+}
+
+// Valentine: No button runs away inside the actions area (never leaves or disappears)
+var valentineActions = document.getElementById('valentineActions');
+var valentineNo = document.getElementById('valentineNo');
+if (valentineNo && pageValentine && valentineActions) {
+  var RUN_DISTANCE = 160;
+  var PAD = 10;
+
+  function clamp(n, min, max) {
+    return Math.max(min, Math.min(max, n));
+  }
+
+  function placeNoInitial() {
+    if (!pageValentine.classList.contains('open')) return;
+    var a = valentineActions.getBoundingClientRect();
+    var b = valentineNo.getBoundingClientRect();
+    var x = a.width - b.width - 90;
+    var y = 10;
+    valentineNo.style.left = clamp(x, PAD, a.width - b.width - PAD) + 'px';
+    valentineNo.style.top = clamp(y, PAD, a.height - b.height - PAD) + 'px';
+  }
+
+  function moveNoAway(fromX, fromY) {
+    var a = valentineActions.getBoundingClientRect();
+    var b = valentineNo.getBoundingClientRect();
+    var minX = PAD;
+    var maxX = a.width - b.width - PAD;
+    var minY = PAD;
+    var maxY = a.height - b.height - PAD;
+    var cx = fromX - a.left;
+    var cy = fromY - a.top;
+    var best = { x: minX, y: minY, d: -1 };
+    for (var i = 0; i < 18; i++) {
+      var x = Math.random() * (maxX - minX) + minX;
+      var y = Math.random() * (maxY - minY) + minY;
+      var dx = (x + b.width / 2) - cx;
+      var dy = (y + b.height / 2) - cy;
+      var d = Math.hypot(dx, dy);
+      if (d > best.d) best = { x: x, y: y, d: d };
+    }
+    valentineNo.style.left = clamp(best.x, minX, maxX) + 'px';
+    valentineNo.style.top = clamp(best.y, minY, maxY) + 'px';
+  }
+
+  valentineActions.addEventListener('mousemove', function (e) {
+    if (!pageValentine.classList.contains('open')) return;
+    var nb = valentineNo.getBoundingClientRect();
+    var dist = Math.hypot(
+      (nb.left + nb.width / 2) - e.clientX,
+      (nb.top + nb.height / 2) - e.clientY
+    );
+    if (dist < RUN_DISTANCE) moveNoAway(e.clientX, e.clientY);
+  });
+
+  valentineNo.addEventListener('pointerenter', function (e) {
+    moveNoAway(e.clientX, e.clientY);
+  });
+  valentineNo.addEventListener('pointerdown', function (e) {
+    e.preventDefault();
+    moveNoAway(e.clientX, e.clientY);
+  });
+
+  var obs = new MutationObserver(function () {
+    if (pageValentine.classList.contains('open')) {
+      setTimeout(placeNoInitial, 50);
+    }
+  });
+  obs.observe(pageValentine, { attributes: true, attributeFilter: ['class'] });
+  window.addEventListener('resize', placeNoInitial);
 }
 
 // --- Stars with facts (top 60% of screen) ---

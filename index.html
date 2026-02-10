@@ -6,14 +6,32 @@
   <title>Valentine's Day</title>
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="flowers.css">
+  <link rel="stylesheet" href="light-pillar.css">
+  <link rel="stylesheet" href="dot-grid.css">
+  <link rel="stylesheet" href="bouquet.css">
+  <link rel="stylesheet" href="infinite-menu.css">
 </head>
 <body>
-  <main id="page1">
+  <div id="pageBha" class="screen-bha">
+    <button type="button" class="bha-circle" id="bhaCircle" aria-label="Continue">
+      <span class="bha-text" aria-hidden="true">भा</span>
+    </button>
+  </div>
+  <main id="page1" class="heart-screen-hidden">
     <button type="button" class="btn-heart" aria-label="Click for love">❤️</button>
   </main>
+  <div id="explosion" class="explosion-overlay" aria-hidden="true"></div>
+  <div id="pageGreeting" class="screen-greeting" aria-hidden="true">
+    <div id="dot-grid-wrap" class="dot-grid__wrap"></div>
+    <button type="button" class="back-btn back-btn--greeting" aria-label="Go back">← Back</button>
+    <p class="greeting-text">hello my love</p>
+    <button type="button" class="btn-heart btn-heart--greeting" aria-label="Continue">❤️</button>
+    <p class="greeting-subtext">I have to say ...</p>
+  </div>
   <div id="page2" class="screen-2" aria-hidden="true">
-    <button type="button" class="back-btn" aria-label="Go back">← Back</button>
-    <button type="button" class="next-btn" id="nextBtn" aria-label="Next">Next →</button>
+    <div id="galaxy-container" class="galaxy-container"></div>
+    <button type="button" class="back-btn back-btn--page2" aria-label="Go back">← Back</button>
+    <button type="button" class="next-btn next-btn--page2" id="nextBtnPage2" aria-label="Next">Build your bouquet →</button>
     <div class="stars-container" id="starsContainer"></div>
     <div class="star-fact" id="starFact" role="tooltip"></div>
     <div class="glow-text">in the darkest night, you are my brightest star</div>
@@ -297,11 +315,110 @@
   <div id="page3" class="screen-3" aria-hidden="true">
     <button type="button" class="back-btn back-btn--page3" aria-label="Go back">← Back</button>
     <button type="button" class="next-btn next-btn--page3" id="nextBtn3" aria-label="Next">Next →</button>
+    <p class="loki-text loki-text--top">loki must have had to pull all the timelines together to make us meet</p>
+    <div class="loki-text loki-text--bottom">
+      <span>so that makes me</span>
+      <span>the LOKIest person</span>
+    </div>
     <div class="loki-stage" aria-hidden="true">
       <div class="loki-base" aria-hidden="true"></div>
       <div class="loki-top" aria-hidden="true"></div>
     </div>
   </div>
+  <div id="pageBouquet" class="screen-bouquet" aria-hidden="true">
+    <button type="button" class="back-btn back-btn--bouquet" aria-label="Go back">← Back</button>
+    <div class="bouquet-wrap">
+      <header class="bouquet-header">
+        <div>
+          <h1 class="bouquet-title">Make something with me.</h1>
+          <p class="bouquet-sub">Pick a few flowers. Drag them into the bouquet. Arrange it however you want.</p>
+        </div>
+        <div class="bouquet-hint">
+          <span class="pill">Drag from tray → canvas</span>
+          <span class="pill">Double-click to remove</span>
+          <span class="pill">Or drag to trash</span>
+        </div>
+      </header>
+      <main class="bouquet-main">
+        <section id="bouquetCanvas" class="bouquet-canvas" aria-label="Bouquet canvas">
+          <div class="dropLabel">Drop flowers here</div>
+          <div class="coneWrap" id="bouquetCone"></div>
+        </section>
+        <aside class="bouquet-panel">
+          <div class="card">
+            <h2>Flower tray</h2>
+            <p>Drag a flower onto the bouquet. Add as many as you like.</p>
+          </div>
+          <div id="bouquetTray" class="tray card" aria-label="Flower tray"></div>
+          <div class="card bouquet-panel-options">
+            <div class="cone-color-wrap">
+              <label for="coneColorPicker" class="cone-color-label">Cone color</label>
+              <input type="color" id="coneColorPicker" class="cone-color-input" value="#c8d4e0" aria-label="Choose cone color" />
+            </div>
+          </div>
+          <div class="card">
+            <div class="bouquet-controls">
+              <button type="button" id="bouquetClearBtn">Clear</button>
+              <button type="button" id="bouquetRandomBtn">Random bouquet</button>
+              <button type="button" id="bouquetPerfectBtn" class="primary">That’s perfect</button>
+            </div>
+            <div style="height:10px"></div>
+            <div id="bouquetTrash" class="trash" aria-label="Trash drop zone">🗑️ Drag here to remove</div>
+          </div>
+        </aside>
+      </main>
+    </div>
+  </div>
+  <div id="pageAfterBouquet" class="screen-after-bouquet" aria-hidden="true">
+    <p class="after-bouquet-text">Of course it's beautiful. You made it.</p>
+    <button type="button" class="next-btn next-btn--after-bouquet" id="nextBtnAfterBouquet" aria-label="Next">Next →</button>
+  </div>
+  <div id="pageInfiniteMenu" class="screen-infinite-menu" aria-hidden="true">
+    <div id="pixel-snow-bg" class="pixel-snow-bg" aria-hidden="true"></div>
+    <button type="button" class="back-btn back-btn--infinite-menu" id="backBtnInfiniteMenu" aria-label="Go back">← Back</button>
+    <button type="button" class="next-btn next-btn--infinite-menu" id="nextBtnInfiniteMenu" aria-label="Next">Next →</button>
+    <h1 class="infinite-menu-heading">and you make the moments beautiful and my life worth living</h1>
+    <canvas id="infinite-grid-menu-canvas"></canvas>
+    <h2 class="face-title inactive" id="infinite-menu-title"></h2>
+    <p class="face-description inactive" id="infinite-menu-description"></p>
+  </div>
+  <div id="pageSnow" class="screen-snow" aria-hidden="true">
+    <div id="pixel-snow-screen" class="pixel-snow-bg pixel-snow-bg--full" aria-hidden="true"></div>
+    <button type="button" class="back-btn back-btn--snow" id="backBtnSnow" aria-label="Go back">← Back</button>
+    <button type="button" class="next-btn next-btn--snow" id="nextBtnSnow" aria-label="Next">Next →</button>
+    <p class="snow-screen-text">but my real question is</p>
+    <button type="button" class="next-btn next-btn--snow-center" id="nextBtnSnowCenter" aria-label="Next">Next →</button>
+  </div>
+  <div id="pageValentine" class="screen-valentine" aria-hidden="true">
+    <button type="button" class="back-btn back-btn--valentine" id="backBtnValentine" aria-label="Go back">← Back</button>
+    <h2 class="valentine-question">will you be my valentine?</h2>
+    <div class="valentine-buttons" id="valentineActions">
+      <button type="button" class="valentine-btn valentine-btn--yes" id="valentineYes" aria-label="Yes">Yes</button>
+      <button type="button" class="valentine-btn valentine-btn--no" id="valentineNo" aria-label="No (shy)">No</button>
+    </div>
+  </div>
+  <div id="pageFireworks" class="screen-fireworks" aria-hidden="true">
+    <div class="fireworks-yes-scroll-wrap" aria-hidden="true">
+      <div class="fireworks-yes-scroll">YYYYYYYYYYYYYYYYYYYYYYYYYYEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEESSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS</div>
+    </div>
+    <canvas id="fireworksCanvas">Canvas is not supported in your browser.</canvas>
+    <button type="button" class="fireworks-continue-btn" id="fireworksContinueBtn" aria-label="Continue">Continue →</button>
+  </div>
+  <div id="page5" class="screen-5 light-pillar-page" aria-hidden="true">
+    <button type="button" class="back-btn back-btn--page5" aria-label="Go back">← Back</button>
+    <button type="button" class="next-btn next-btn--page5" id="nextBtn5" aria-label="Next">Next →</button>
+    <div id="light-pillar-container" class="light-pillar-container"></div>
+    <p class="light-pillar-shiny-text" id="light-pillar-shiny-text">and as far as universes go, im very happy that i got to exist in the same reality as you</p>
+  </div>
+  <script src="https://unpkg.com/three@0.160.0/build/three.min.js"></script>
+  <script src="https://unpkg.com/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script src="pixel-snow.js"></script>
+  <script src="fireworks.js"></script>
   <script src="script.js"></script>
+  <script src="dot-grid.js"></script>
+  <script src="galaxy.js"></script>
+  <script src="light-pillar.js"></script>
+  <script src="bouquet.js"></script>
+  <script type="module" src="infinite-menu.js"></script>
 </body>
 </html>
